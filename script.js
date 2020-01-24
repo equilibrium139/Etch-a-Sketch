@@ -4,22 +4,13 @@ let dimension = 16;
 
 function width() {return 100 / dimension;}
 
-let grid = [];
+function squareDimension () {return 900 / dimension;}
 
 createGrid();
 
-function addRow() {
-    let row = document.createElement("div");
-    container.appendChild(row);
-    for (let i = 0; i < dimension; ++i) {
-        row.appendChild(createSquare());
-    }
-    grid.push(row);
-}
-
-function createSquare(row) {
+function createSquare() {
     let div = document.createElement("div");
-    div.style.cssText = `display: inline-block ; width: ${width()}%; height: 100%;`;
+    div.style.cssText = `float: left ; width: ${squareDimension()}px; height: ${squareDimension()}px;`;
     div.addEventListener("mouseover", () => {
         div.style.backgroundColor = "black";
     });
@@ -27,87 +18,10 @@ function createSquare(row) {
 }
 
 function createGrid() {
-    for (let i = 0; i < dimension; ++i) {
-        addRow();
+    for (let i = 0; i < dimension * dimension; ++i) {
+        //addRow();
+        container.appendChild(createSquare());
     }
-}
-
-function clear() {
-    grid.forEach(row => {
-        let elements = row.children;
-        for(let i = 0; i < elements.length; ++i)
-        {
-            elements[i].style.backgroundColor = "white";
-        }
-    });
-}
-
-function adjustWidth(row)
-{
-    let elements = row.children;
-    for(let i = 0; i < elements.length; ++i)
-    {
-        console.log(width());
-        elements[i].style.width = `${width()}%`;
-    }
-}
-
-function removeColumns(columns)
-{
-    grid.forEach(row => {
-        let elements = row.children;
-        for(let i = 0; i < columns; ++i)
-        {
-            row.removeChild(elements[i]);
-        }
-        adjustWidth(row);
-    });
-}
-
-function addColumns(columns)
-{
-    grid.forEach(row => {
-        for(let i = 0; i < columns; ++i)
-        {
-            row.appendChild(createSquare());
-        }
-        adjustWidth(row);
-    });
-}
-
-
-function removeRows(rows)
-{
-    for(let i = 0; i < rows; ++i)
-    {
-        container.removeChild(container.lastChild);
-    }
-}
-
-function addRows(rows)
-{
-    for(let i = 0; i < rows; ++i)
-    {
-        addRow();
-    }
-}
-
-function adjustRowHeight()
-{
-    grid.forEach(row => {
-        row.style.cssText = `height: ${900 / dimension}px`;
-    });
-}
-
-function resize() {
-    let oldDimension = dimension;
-    do {
-        dimension = prompt("Enter a number between 1 and 100");
-    } while(dimension > 100 && dimension < 1);
-    if(dimension < oldDimension) {removeRows(oldDimension - dimension); removeColumns(oldDimension - dimension);}
-    else if(dimension > oldDimension) {addColumns(dimension - oldDimension); addRows(dimension - oldDimension); console.log(grid.length); }
-    adjustRowHeight();
-    // createGrid();
 }
 
 let clearButton = document.querySelector("#clear");
@@ -115,3 +29,57 @@ clearButton.addEventListener("click", clear);
 
 let resizeButton = document.querySelector("#resize");
 resizeButton.addEventListener("click", resize);
+
+function clear() {
+    let elements = container.children;
+    for(let i = 0; i < elements.length; ++i)
+    {
+        elements[i].style.backgroundColor = "white";
+    }
+}
+
+function removeSquares(nSquares)
+{
+    if(nSquares < 0) { addSquares(-nSquares);}
+    for(let i = 0; i < nSquares; ++i)
+    {
+        container.removeChild(container.firstChild);
+    }
+}
+
+function addSquares(nSquares)
+{
+    for(let i = 0; i < nSquares; ++i)
+    {
+        container.appendChild(createSquare());
+    }
+}
+
+function resetSquareDims()
+{
+    let elements = container.children;
+    for(let i = 0; i < elements.length; ++i)
+    {
+        elements[i].style.width = `${squareDimension()}px`;
+        elements[i].style.height =  `${squareDimension()}px`;
+    }
+}
+
+function resize() {
+    clear();
+    let oldDimension = dimension;
+    do {
+        dimension = prompt("Enter a number between 1 and 100", dimension);
+    } while(dimension > 100 && dimension < 1);
+    resetSquareDims();
+
+    if(dimension - oldDimension < 0) {
+        removeSquares((oldDimension * oldDimension) - (dimension * dimension));
+        console.log("Removing  " + ((oldDimension * oldDimension) - (dimension * dimension)) + " squares");
+    }
+    else {
+        addSquares((dimension * dimension) - (oldDimension * oldDimension)); 
+        console.log("Adding " + ((dimension * dimension) - (oldDimension * oldDimension)) + " squares");
+    }
+    // createGrid();
+}
