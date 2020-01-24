@@ -2,15 +2,10 @@ const container = document.querySelector("#container");
 
 let dimension = 16;
 
-function width() {return 100 / dimension;}
-
-function squareDimension () {return 900 / dimension;}
-
 createGrid();
 
 function createSquare() {
     let div = document.createElement("div");
-    div.style.cssText = `float: left ; width: ${squareDimension()}px; height: ${squareDimension()}px;`;
     div.addEventListener("mouseover", () => {
         div.style.backgroundColor = "black";
     });
@@ -55,15 +50,6 @@ function addSquares(nSquares)
     }
 }
 
-function resetSquareDims()
-{
-    let elements = container.children;
-    for(let i = 0; i < elements.length; ++i)
-    {
-        elements[i].style.width = `${squareDimension()}px`;
-        elements[i].style.height =  `${squareDimension()}px`;
-    }
-}
 
 function resize() {
     clear();
@@ -71,7 +57,6 @@ function resize() {
     do {
         dimension = prompt("Enter a number between 1 and 100", dimension);
     } while(dimension > 100 && dimension < 1);
-    resetSquareDims();
 
     if(dimension - oldDimension < 0) {
         removeSquares((oldDimension * oldDimension) - (dimension * dimension));
@@ -81,5 +66,7 @@ function resize() {
         addSquares((dimension * dimension) - (oldDimension * oldDimension)); 
         console.log("Adding " + ((dimension * dimension) - (oldDimension * oldDimension)) + " squares");
     }
+
+    
     // createGrid();
 }
