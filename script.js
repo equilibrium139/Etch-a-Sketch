@@ -67,6 +67,6 @@ function resize() {
         console.log("Adding " + ((dimension * dimension) - (oldDimension * oldDimension)) + " squares");
     }
 
-    
+    container.style.cssText = `grid-template-columns: repeat(${dimension}, 1fr)`
     // createGrid();
 }
